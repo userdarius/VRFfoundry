@@ -18,6 +18,8 @@ contract ChainlinkScript is Script {
     // We now have a script ready to run, but we still need to set up our environment variables
     // to correctly deploy our smart contract
     // .env file
-    // Then we want to run source .env - this allows us to load our
+    // Then we want to run >> source .env - this allows us to load our
     // environment variables into the terminal
+    // Now to deploy : forge script script/chainlinkVRF.s.sol:ChainlinkScript --rpc-url $RPC_URL_GOERLI --private-key $PRIVATE_KEY
+    // --broadcast --verify --etherscan-api-key $ETHERSCAN_API_KEY -vvvv
 }

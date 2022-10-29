@@ -36,6 +36,8 @@ contract VRFv2Consumer is VRFConsumerBaseV2 {
     uint256 public s_requestId;
     address s_owner;
 
+    // As you can see we have a constructor that takes in the subscription ID of our VRF subscription.
+    // The VRFConsumerBaseV2 constructor takes in the VRF coordinator address.
     constructor(uint64 subscriptionId) VRFConsumerBaseV2(vrfCoordinator) {
         COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);
         s_owner = msg.sender;
