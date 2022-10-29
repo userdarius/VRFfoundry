@@ -6,11 +6,15 @@ import "chainlink/v0.8/VRFConsumerBaseV2.sol";
 contract VRFv2Consumer is VRFConsumerBaseV2 {
     VRFCoordinatorV2Interface COORDINATOR;
     // Your subscription ID.
-    //hardcoded into the constructor
+    // hardcoded into the constructor
+    // The subscription ID is a unique identifier for your subscription and is passed
+    // as a parameter in the constructor
     uint64 s_subscriptionId;
+    // Each VRF supported chain has a unique contract address representing the main VRF V2 contract.
+    // This address is passed to both the inherited interface as a reference later.
     // Goerli VRF v2 coordinator address
     address vrfCoordinator = 0x2Ca8E0C643bDe4C2E08ab1fA0da3401AdAD7734D;
-    // The gas lane to use, which specifies the maximum gas price to bump to.
+    // The gas lane to use, which specifies the maximum gas price we are willing to pay per request.
     // Higher gas lane means higher price and lower confirmation times,
     // mainnets on chainlink VRF typically have multiple gas lanes,
     // but Goerli only has one gas lane. For more details,
@@ -18,10 +22,13 @@ contract VRFv2Consumer is VRFConsumerBaseV2 {
     bytes32 keyHash =
         0x79d3d8832d904592c0bf9818b621522c988bb8b0c05cdc3b15aea1b6e8db0c15;
     //Goerli has a max gas limit of 2.5 million,
+    // As a rule you will be charged with the amount of work already done by the VRF oracle
+    // if the function fails due to a lack of gas on your part.
     //we'll cap out at 200000, enough for about 10 words
     uint32 callbackGasLimit = 200000;
     // The default is 3, but you can set this higher.
-    uint16 requestConfirmations = 5;
+    // The higher the more secure the data.
+    uint16 requestConfirmations = 3;
     // Cannot exceed VRFCoordinatorV2.MAX_NUM_WORDS.
     //maximum number of random values is 500 for Goerli Testnet
     uint32 public numWords = 3;
@@ -35,7 +42,8 @@ contract VRFv2Consumer is VRFConsumerBaseV2 {
         s_subscriptionId = subscriptionId;
     }
 
-    // Assumes the subscription is funded sufficiently.
+    // Assumes the subscription is funded sufficiently. Sends a request to the VRF coordinator
+    // for a supply of random words. Every single request has a unique ID.
     function requestRandomWords() external onlyOwner {
         // Will revert if subscription is not set and funded.
         s_requestId = COORDINATOR.requestRandomWords(
@@ -47,6 +55,8 @@ contract VRFv2Consumer is VRFConsumerBaseV2 {
         );
     }
 
+    // This is the function that is called by the VRF coordinator when the request is fulfilled.
+    // It uses the request IDs we saw before to fetch our random data.
     function fulfillRandomWords(
         uint256, /* requestId */
         uint256[] memory randomWords
