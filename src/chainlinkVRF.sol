@@ -4,6 +4,7 @@ import "chainlink/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "chainlink/v0.8/VRFConsumerBaseV2.sol";
 
 contract VRFv2Consumer is VRFConsumerBaseV2 {
+    // Does the random word verification
     VRFCoordinatorV2Interface COORDINATOR;
     // Your subscription ID.
     // hardcoded into the constructor
@@ -12,7 +13,7 @@ contract VRFv2Consumer is VRFConsumerBaseV2 {
     uint64 s_subscriptionId;
     // Each VRF supported chain has a unique contract address representing the main VRF V2 contract.
     // This address is passed to both the inherited interface as a reference later.
-    // Goerli VRF v2 coordinator address
+    // Goerli VRF v2 coordinator address - we use this address to request a random value
     address vrfCoordinator = 0x2Ca8E0C643bDe4C2E08ab1fA0da3401AdAD7734D;
     // The gas lane to use, which specifies the maximum gas price we are willing to pay per request.
     // Higher gas lane means higher price and lower confirmation times,
@@ -24,13 +25,13 @@ contract VRFv2Consumer is VRFConsumerBaseV2 {
     //Goerli has a max gas limit of 2.5 million,
     // As a rule you will be charged with the amount of work already done by the VRF oracle
     // if the function fails due to a lack of gas on your part.
-    //we'll cap out at 200000, enough for about 10 words
+    // we'll cap out at 200000, enough for about 10 words since each word costs about 20k gas
     uint32 callbackGasLimit = 200000;
     // The default is 3, but you can set this higher.
     // The higher the more secure the data.
     uint16 requestConfirmations = 3;
     // Cannot exceed VRFCoordinatorV2.MAX_NUM_WORDS.
-    //maximum number of random values is 500 for Goerli Testnet
+    // maximum number of random values is 500 for Goerli Testnet
     uint32 public numWords = 3;
     uint256[] public s_randomWords;
     uint256 public s_requestId;
